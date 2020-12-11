@@ -1,24 +1,32 @@
 #!/usr/bin/python
 
-import os, sys
+from operator import le
+import os
 import json
 import numpy as np
 import re
+
+from collections import defaultdict
 
 ### YOUR CODE HERE: write at least three functions which solve
 ### specific tasks by transforming the input x and returning the
 ### result. Name them according to the task ID as in the three
 ### examples below. Delete the three examples. The tasks you choose
 ### must be in the data/training directory, not data/evaluation.
-def solve_6a1e5592(x):
-    return x
 
-def solve_b2862040(x):
-    return x
+EMPTY = 0
 
-def solve_05269061(x):
-    return x
-
+def solve_ded97339(x):
+    y = np.zeros(x.shape, dtype=x.dtype)
+    rmemory, cmemory = defaultdict(list), defaultdict(list)
+    colored_blocks = list(zip(*np.where(x != EMPTY)))
+    color = x[colored_blocks[0]]
+    for row, col in colored_blocks:
+        rmemory[row].append(col)
+        cmemory[col].append(row)
+        y[row, min(rmemory[row]):max(rmemory[row]) + 1] = color
+        y[min(cmemory[col]):max(cmemory[col]) + 1, col] = color
+    return y
 
 def main():
     # Find all the functions defined in this file whose names are
@@ -91,5 +99,5 @@ def show_result(x, y, yhat):
     # shape, then y == yhat is just a single bool.
     print(np.all(y == yhat))
 
-if __name__ == "__main__": main()
-
+if __name__ == "__main__":
+    main()
