@@ -4,14 +4,14 @@ import os
 import json
 import re
 import numpy as np
-from skimage.measure import label
+import skimage.measure as imgmeasure
 from operator import le
 from collections import defaultdict
 
 """
 Student Name: Filipe Lima
 ID Number: 20236042
-Github: https://github.com/filipelm/ARC/
+Github: https://github.com/filipelm/ARC
 """
 
 def solve_ded97339(x):
@@ -37,8 +37,35 @@ def solve_ded97339(x):
         # Draw a line between the blocks in the edge of the column connection.
         y[min(cmemory[col]):max(cmemory[col]) + 1, col] = color
     return y
+
+
+def solve_b775ac94(x):
+    """
+    """
+    def detect_structures(grid):
+        labeled = imgmeasure.label(grid, connectivity=2)
+        objects = [np.where(labeled == label) for label in np.unique(labeled) if label]
+        for obj in objects:
+            yield list(zip(*obj))
+
+    def calculate_projection(structure):
+        pass
+
+    def replicate_structures(grid, structures):
+        # Calculate coordinates for projections.
+        projections = map(calculate_projection, structures)
+        for color, projection in projections:
+            # Apply projection to result.
+            for coordinate in projection:
+                grid[coordinate] = color
+        return grid
     
-    
+    structures = detect_structures(x)
+    major_structures = filter(lambda s: len(s) > 1, structures)
+    y = replicate_structures(x, major_structures)
+    return y
+
+
 def main():
     # Find all the functions defined in this file whose names are
     # like solve_abcd1234(), and run them.
