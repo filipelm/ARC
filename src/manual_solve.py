@@ -1,33 +1,44 @@
 #!/usr/bin/python
 
-from operator import le
 import os
 import json
-import numpy as np
 import re
-
+import numpy as np
+from skimage.measure import label
+from operator import le
 from collections import defaultdict
 
-### YOUR CODE HERE: write at least three functions which solve
-### specific tasks by transforming the input x and returning the
-### result. Name them according to the task ID as in the three
-### examples below. Delete the three examples. The tasks you choose
-### must be in the data/training directory, not data/evaluation.
-
-EMPTY = 0
+"""
+Student Name: Filipe Lima
+ID Number: 20236042
+Github: https://github.com/filipelm/ARC/
+"""
 
 def solve_ded97339(x):
+    """
+    
+    """
     y = np.zeros(x.shape, dtype=x.dtype)
     rmemory, cmemory = defaultdict(list), defaultdict(list)
-    colored_blocks = list(zip(*np.where(x != EMPTY)))
+    # Find the coordinates for all blocks in the grid.
+    colored_blocks = list(zip(*np.where(x)))
+    # Save the color of the block.
     color = x[colored_blocks[0]]
+    # For each block coordinate, check whether another block
+    # appears in the same row or in the same column. Draw a
+    # straight line between the current block and any other
+    # block that appears in the same row or column.
     for row, col in colored_blocks:
+        # keep track of the row and column already seen.
         rmemory[row].append(col)
         cmemory[col].append(row)
+        # Draw a line between the blocks in the edge of the row connection.
         y[row, min(rmemory[row]):max(rmemory[row]) + 1] = color
+        # Draw a line between the blocks in the edge of the column connection.
         y[min(cmemory[col]):max(cmemory[col]) + 1, col] = color
     return y
-
+    
+    
 def main():
     # Find all the functions defined in this file whose names are
     # like solve_abcd1234(), and run them.
