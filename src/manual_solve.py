@@ -4,7 +4,9 @@ import os
 import json
 import re
 import numpy as np
-import skimage.measure as imgmeasure
+import skimage.measure
+import scipy
+from numpy.core.shape_base import stack
 from operator import le
 from collections import defaultdict
 
@@ -14,9 +16,9 @@ ID Number: 20236042
 Github: https://github.com/filipelm/ARC
 """
 
+
 def solve_ded97339(x):
     """
-    
     """
     y = np.zeros(x.shape, dtype=x.dtype)
     rmemory, cmemory = defaultdict(list), defaultdict(list)
@@ -42,60 +44,80 @@ def solve_ded97339(x):
 def solve_b775ac94(x):
     """
     """
-    def detect_structures(grid):
-        labeled = imgmeasure.label(grid, connectivity=2)
-        objects = [np.where(labeled == label) for label in np.unique(labeled) if label]
+    def find_structures(grid):
+        labeled = skimage.measure.label(grid, connectivity=2)
+        objects = (np.where(labeled == label) for label in np.unique(labeled) if label)
         for obj in objects:
-            yield list(zip(*obj))
+            yield np.array(obj).T
 
-    def calculate_projection(structure):
-        pass
+    def find_closest_expandable_roots(structure, expandable_roots, distance_threshold=2):
+        kdtree = scipy.spatial.KDTree(structure)
+        for root in expandable_roots:
+            distance, index = kdtree.query(root)
+            if distance <= distance_threshold:
+                yield (structure[index], root)
+                
+    def mirror_structure(structure, structure_root, expandable_root):
+        x1, y1 = structure_root[0][0], structure_root[0][1]    
+        x2, y2 = expandable_root[0][0], expandable_root[0][1]
+        blueprint = structure_root - structure
 
-    def replicate_structures(grid, structures):
-        # Calculate coordinates for projections.
-        projections = map(calculate_projection, structures)
-        for color, projection in projections:
-            # Apply projection to result.
-            for coordinate in projection:
-                grid[coordinate] = color
+        if x2 == x1 and y2 != y1:
+            return blueprint @ [[-1, 0], [0, 1]] + expandable_root
+        if x2 != x1 and y2 == y1:
+            return blueprint @ [[1, 0], [0, -1]] + expandable_root
+        if x2 != x1 and y2 != y1:
+            return blueprint @ [[1, 0], [0, 1]] + expandable_root
+        else:
+            return blueprint @ [[0, 1], [1, 0]] + expandable_root
+                
+    def expand_estructures(grid):
+        structures = list(find_structures(grid))
+        large_structures = filter(lambda structure: len(structure) > 1, structures)
+        expandable_roots = list(filter(lambda structure: len(structure) == 1, structures))
+        for structure in large_structures:
+            structure_expandable_roots = find_closest_expandable_roots(structure, expandable_roots)
+            for structure_root, expandable_root in structure_expandable_roots:
+                color = grid[tuple(expandable_root.T)][0]
+                mirrored_structure = mirror_structure(structure, structure_root, expandable_root)
+                grid[tuple(mirrored_structure.T)] = color
         return grid
-    
-    structures = detect_structures(x)
-    major_structures = filter(lambda s: len(s) > 1, structures)
-    y = replicate_structures(x, major_structures)
+
+    y = expand_estructures(np.copy(x))
+
     return y
 
 
 def main():
     # Find all the functions defined in this file whose names are
     # like solve_abcd1234(), and run them.
-
     # regex to match solve_* functions and extract task IDs
-    p = r"solve_([a-f0-9]{8})" 
+    p = r"solve_([a-f0-9]{8})"
     tasks_solvers = []
     # globals() gives a dict containing all global names (variables
     # and functions), as name: value pairs.
-    for name in globals(): 
+    for name in globals():
         m = re.match(p, name)
         if m:
             # if the name fits the pattern eg solve_abcd1234
-            ID = m.group(1) # just the task ID
-            solve_fn = globals()[name] # the fn itself
+            ID = m.group(1)  # just the task ID
+            solve_fn = globals()[name]  # the fn itself
             tasks_solvers.append((ID, solve_fn))
 
     for ID, solve_fn in tasks_solvers:
         # for each task, read the data and call test()
-        directory = os.path.join("..", "data", "training")
+        directory = os.path.join("data", "training")
         json_filename = os.path.join(directory, ID + ".json")
         data = read_ARC_JSON(json_filename)
         test(ID, solve_fn, data)
-    
+
+
 def read_ARC_JSON(filepath):
     """Given a filepath, read in the ARC task data which is in JSON
     format. Extract the train/test input/output pairs of
     grids. Convert each grid to np.array and return train_input,
     train_output, test_input, test_output."""
-    
+
     # Open the JSON file and load it 
     data = json.load(open(filepath))
 
@@ -123,7 +145,7 @@ def test(taskID, solve, data):
         yhat = solve(x)
         show_result(x, y, yhat)
 
-        
+
 def show_result(x, y, yhat):
     print("Input")
     print(x)
@@ -136,6 +158,7 @@ def show_result(x, y, yhat):
     # and we test whether it is True everywhere. if yhat has the wrong
     # shape, then y == yhat is just a single bool.
     print(np.all(y == yhat))
+
 
 if __name__ == "__main__":
     main()
