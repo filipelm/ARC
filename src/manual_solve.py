@@ -32,9 +32,9 @@ def solve_ded97339(x):
         # keep track of the row and column already seen.
         rmemory[row].append(col)
         cmemory[col].append(row)
-        # Draw a line between the blocks in the edge of the row connection.
+        # Draw a line between the blocks in the same row.
         y[row, min(rmemory[row]):max(rmemory[row]) + 1] = color
-        # Draw a line between the blocks in the edge of the column connection.
+        # Draw a line between the blocks in the same column.
         y[min(cmemory[col]):max(cmemory[col]) + 1, col] = color
     return y
 
@@ -69,7 +69,7 @@ def solve_b775ac94(x):
         else:
             return blueprint @ [[0, 1], [1, 0]] + expandable_root
                 
-    def expand_estructures(grid):
+    def expand_structures(grid):
         structures = list(find_structures(grid))
         large_structures = filter(lambda structure: len(structure) > 1, structures)
         expandable_roots = list(filter(lambda structure: len(structure) == 1, structures))
@@ -81,7 +81,7 @@ def solve_b775ac94(x):
                 grid[tuple(mirrored_structure.T)] = color
         return grid
 
-    y = expand_estructures(np.copy(x))
+    y = expand_structures(np.copy(x))
     return y
 
 
