@@ -18,23 +18,14 @@ Github: https://github.com/filipelm/ARC
 def solve_ded97339(x):
     """
     """
-    y = np.zeros(x.shape, dtype=x.dtype)
+    y = np.copy(x)
     rmemory, cmemory = defaultdict(list), defaultdict(list)
-    # Find the coordinates for all blocks in the grid.
     colored_blocks = list(zip(*np.where(x)))
-    # Save the color of the block.
     color = x[colored_blocks[0]]
-    # For each block coordinate, check whether another block
-    # appears in the same row or in the same column. Draw a
-    # straight line between the current block and any other
-    # block that appears in the same row or column.
     for row, col in colored_blocks:
-        # keep track of the row and column already seen.
         rmemory[row].append(col)
         cmemory[col].append(row)
-        # Draw a line between the blocks in the same row.
         y[row, min(rmemory[row]):max(rmemory[row]) + 1] = color
-        # Draw a line between the blocks in the same column.
         y[min(cmemory[col]):max(cmemory[col]) + 1, col] = color
     return y
 
@@ -43,12 +34,18 @@ def solve_b775ac94(x):
     """
     """
     def find_structures(grid):
+        """
+        Find connected structures based on their colors and return their coordinates in the grid.
+        """
         labeled = skimage.measure.label(grid, connectivity=2)
         objects = (np.where(labeled == label) for label in np.unique(labeled) if label)
         for obj in objects:
             yield np.array(obj).T
 
     def find_closest_expandable_roots(structure, expandable_roots, distance_threshold=2):
+        """
+        Return the expandable roots closest to the structure.
+        """
         kdtree = scipy.spatial.KDTree(structure)
         for root in expandable_roots:
             distance, index = kdtree.query(root)
@@ -56,6 +53,10 @@ def solve_b775ac94(x):
                 yield (structure[index], root)
                 
     def mirror_structure(structure, structure_root, expandable_root):
+        """
+        Calculate the mirror coordinates of a structure based on the position of a expandable root
+        in relation to the structure's root.
+        """
         x1, y1 = structure_root[0][0], structure_root[0][1]    
         x2, y2 = expandable_root[0][0], expandable_root[0][1]
         blueprint = structure_root - structure
@@ -70,6 +71,9 @@ def solve_b775ac94(x):
             return blueprint @ [[0, 1], [1, 0]] + expandable_root
                 
     def expand_structures(grid):
+        """
+        Expand roots closest to the large structures found in the grid.
+        """
         structures = list(find_structures(grid))
         large_structures = filter(lambda structure: len(structure) > 1, structures)
         expandable_roots = list(filter(lambda structure: len(structure) == 1, structures))
