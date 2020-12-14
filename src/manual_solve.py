@@ -6,8 +6,6 @@ import re
 import numpy as np
 import skimage.measure
 import scipy
-from numpy.core.shape_base import stack
-from operator import le
 from collections import defaultdict
 
 """
@@ -84,7 +82,6 @@ def solve_b775ac94(x):
         return grid
 
     y = expand_estructures(np.copy(x))
-
     return y
 
 
@@ -106,7 +103,7 @@ def main():
 
     for ID, solve_fn in tasks_solvers:
         # for each task, read the data and call test()
-        directory = os.path.join("data", "training")
+        directory = os.path.join("..", "data", "training")
         json_filename = os.path.join(directory, ID + ".json")
         data = read_ARC_JSON(json_filename)
         test(ID, solve_fn, data)
