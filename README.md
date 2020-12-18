@@ -15,7 +15,7 @@ The objective of this assignment is to solve three of the ARC tasks by programmi
 
 ### Task ded97339
 
-The objective of this task is to draw a straight line between the blocks in a grid, when possible. Based on the examples we can observe that we are able to draw a line everytime two or more blocks appears in the same row or column.
+The objective of this task is to draw a straight line between the blocks in a grid, whenever possible. Based on the examples we can observe that we are able to draw a line everytime two or more blocks appears in the same row or column.
 
 This task requires the gemotry and topology priors.
 
