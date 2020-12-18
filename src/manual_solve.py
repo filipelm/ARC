@@ -66,8 +66,8 @@ def solve_b775ac94(x):
         labeled = skimage.measure.label(grid, connectivity=2)
         # Extract the coordinate of each structure and expandable root
         # based on the connected compoenents labels.
-        objects = (np.where(labeled == label) for label in np.unique(labeled) if label)
-        for obj in objects:
+        components = (np.where(labeled == label) for label in np.unique(labeled) if label)
+        for obj in components:
             yield np.array(obj).T
 
     def find_closest_expandable_roots(structure, expandable_roots, distance_threshold=2):
@@ -107,8 +107,6 @@ def solve_b775ac94(x):
             return blueprint @ [[1, 0], [0, -1]] + expandable_root
         if x2 != x1 and y2 != y1:
             return blueprint @ [[1, 0], [0, 1]] + expandable_root
-        else:
-            return blueprint @ [[0, 1], [1, 0]] + expandable_root
                 
     def expand_structures(grid):
         """
