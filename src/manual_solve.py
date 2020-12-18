@@ -96,7 +96,7 @@ def solve_c8cbb738(x):
     def dominant_color(grid):
         return np.argmax(np.bincount(grid.flat))
 
-    def find_object_colors(grid, background):
+    def find_objects_colors(grid, background):
         return np.unique(grid[np.where(grid != background)])
 
     def isolate(grid, color):
@@ -112,7 +112,7 @@ def solve_c8cbb738(x):
         return np.pad(matrix, [(y//2, y//2 + y%2), (x//2, x//2 + x%2)])
 
     background = dominant_color(x)
-    objects = [isolate(x, color) for color in find_object_colors(x, background)]
+    objects = [isolate(x, color) for color in find_objects_colors(x, background)]
     largest_object = max(objects, key=np.size)
     y = sum(map(lambda object: reshape(object, largest_object.shape), objects))
     y[np.where(y == 0)] = background
