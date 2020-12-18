@@ -4,9 +4,12 @@ On "The Measure of Intelligence", Chollet proposed a new benchmark for AI agents
 
 The ARC challenge assumes that an artificial agent has the following core knowledge priors:
 
-Objectness priors: The agent can recognize objects, know how separate object from noise and perceive that objects interact with each other.
-Numbers and counting priors: The agent can count objects, sort objects by size, can determine which ones appears with high/low frequency and which object is the largest or smallest.
-Basic geometry and topology prior: The agent can recognize basic shapes, symmetry, draw lines, scale objects up and down, copy and repeat objects and understanding relationships such as contains, is contained, outside perimeter etc.
+- Objectness priors: The agent can recognize objects, know how separate object from noise and perceive that objects interact with each other.
+
+- Numbers and counting priors: The agent can count objects, sort objects by size, can determine which ones appears with high/low frequency and which object is the largest or smallest.
+
+- Basic geometry and topology prior: The agent can recognize basic shapes, symmetry, draw lines, scale objects up and down, copy and repeat objects and understanding relationships such as contains, is contained, outside perimeter etc.
+
 ARC is hard for mainstream AI methods because the agent needs to reason about the problem at hand rather than rely only on its prior knowledge of previous tasks. Each new task is surprising and unique, and each example shows very different scenarios. In contrast, these tasks are relatively easy for humans to solve.
 
 ## Hand-coded Solutions
