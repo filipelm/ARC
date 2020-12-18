@@ -1,3 +1,20 @@
+# CT5148 - Programming and Tools for Artificial Intelligence
+
+This repository contains hand-coded solutions for three of the ARC problems:
+
+## Task ded97339
+
+![ded97339](img/ded97339.PNG)
+
+## Task b775ac94
+
+![b775ac94](img/b775ac94.PNG)
+
+## Task c8cbb738
+
+![c8cbb738](img/c8cbb738.PNG)
+
+
 # The Abstraction and Reasoning Corpus (ARC)
 
 This repository contains the ARC task data, as well as a browser-based interface for humans to try their hand at solving the tasks manually.
