@@ -105,11 +105,11 @@ def solve_c8cbb738(x):
         x, y = np.nonzero(object_grid)
         return object_grid[x.min():x.max()+1, y.min():y.max()+1]
 
-    def reshape(matrix, shape):
+    def reshape(grid, shape):
         y_target, x_target = shape
-        y_origin, x_origin = matrix.shape
+        y_origin, x_origin = grid.shape
         x, y = x_target-x_origin, y_target-y_origin
-        return np.pad(matrix, [(y//2, y//2 + y%2), (x//2, x//2 + x%2)])
+        return np.pad(grid, [(y//2, y//2 + y%2), (x//2, x//2 + x%2)])
 
     background = dominant_color(x)
     objects = [isolate(x, color) for color in find_objects_colors(x, background)]
