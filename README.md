@@ -1,13 +1,13 @@
-# CT5148 - Programming and Tools for Artificial Intelligence (Assignment 3)
+# CT5148 - Programming and Tools for Artificial Intelligence (Assignement 3)
 
 On "The Measure of Intelligence", Chollet proposed a new benchmark for AI agents with high capacity of generalization. The benchmark is comprised of tasks like the ones used to measure IQ in humans. Each task contains a few examples of how it is supposed to be performed and one test task that needs to be solved by the agent. This dataset challenges the current state of AI research which is based on data hungry machine learning methods. Although machine learning has been very successful at solving hard problems in many areas, it is still very far away of the AI dream of building artificial human level intelligence.
 
 The ARC challenge assumes that an artificial agent has the following core knowledge priors:
-- Objectness priors: The agent can recognize objects, know how separate object from noise and perceive that objects interact with each other.
-- Numbers and counting priors: The agent can count objects, sort objects by size, can determine which ones appears with high/low frequency and which object is the largest or smallest.
-- Basic geometry and topology prior: The agent can recognize basic shapes, symmetry, draw lines, scale objects up and down, copy and repeat objects and understanding relationships such as contains, is contained, outside perimeter etc.
 
-ARC is hard for mains stream AI methods because the agent needs to reason about the problem at hand rather than rely only on it's pior knowlage of previous tasks. Each new task is surprising and unique and each example shows very different scenarios. In contrast, this tasks are relatively easy for humans to solve.
+Objectness priors: The agent can recognize objects, know how separate object from noise and perceive that objects interact with each other.
+Numbers and counting priors: The agent can count objects, sort objects by size, can determine which ones appears with high/low frequency and which object is the largest or smallest.
+Basic geometry and topology prior: The agent can recognize basic shapes, symmetry, draw lines, scale objects up and down, copy and repeat objects and understanding relationships such as contains, is contained, outside perimeter etc.
+ARC is hard for mainstream AI methods because the agent needs to reason about the problem at hand rather than rely only on its prior knowledge of previous tasks. Each new task is surprising and unique, and each example shows very different scenarios. In contrast, these tasks are relatively easy for humans to solve.
 
 ## Hand-coded Solutions
 
