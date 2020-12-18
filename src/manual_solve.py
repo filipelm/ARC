@@ -4,6 +4,7 @@ import os
 import json
 import re
 import numpy as np
+from numpy.core.numeric import zeros_like
 import skimage.measure
 import scipy
 from collections import defaultdict
@@ -33,9 +34,9 @@ def solve_ded97339(x):
 def solve_b775ac94(x):
     """
     """
-    def find_structures(grid):
+    def find_connected_components(grid):
         """
-        Find connected structures based on their colors and return their coordinates in the grid.
+        Return the coordinates of connected components in the matrix.
         """
         labeled = skimage.measure.label(grid, connectivity=2)
         objects = (np.where(labeled == label) for label in np.unique(labeled) if label)
@@ -74,7 +75,7 @@ def solve_b775ac94(x):
         """
         Expand roots closest to the large structures found in the grid.
         """
-        structures = list(find_structures(grid))
+        structures = list(find_connected_components(grid))
         large_structures = filter(lambda structure: len(structure) > 1, structures)
         expandable_roots = list(filter(lambda structure: len(structure) == 1, structures))
         for structure in large_structures:
@@ -86,6 +87,35 @@ def solve_b775ac94(x):
         return grid
 
     y = expand_structures(np.copy(x))
+    return y
+
+
+def solve_c8cbb738(x):
+    """
+    """
+    def dominant_color(grid):
+        return np.argmax(np.bincount(grid.flat))
+
+    def find_object_colors(grid, background):
+        return np.unique(grid[np.where(grid != background)])
+
+    def isolate(grid, color):
+        object_grid = np.zeros_like(grid)
+        object_grid[np.where(grid == color)] = color
+        x, y = np.nonzero(object_grid)
+        return object_grid[x.min():x.max()+1, y.min():y.max()+1]
+
+    def reshape(matrix, shape):
+        y_target, x_target = shape
+        y_origin, x_origin = matrix.shape
+        x, y = x_target-x_origin, y_target-y_origin
+        return np.pad(matrix, [(y//2, y//2 + y%2), (x//2, x//2 + x%2)])
+
+    background = dominant_color(x)
+    objects = [isolate(x, color) for color in find_object_colors(x, background)]
+    largest_object = max(objects, key=np.size)
+    y = sum(map(lambda object: reshape(object, largest_object.shape), objects))
+    y[np.where(y == 0)] = background
     return y
 
 
